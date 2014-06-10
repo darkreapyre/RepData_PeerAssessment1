@@ -47,7 +47,7 @@ df$date <- as.Date(df$date, format = "%Y-%m-%d")
 
 
 ## What is mean total number of steps taken per day?
-To analyse the number of steps taken per day, the data is broken down and summarized by.
+To analyse the number of steps taken per day, the data is broken down by day and totalled.
 
 ```{r sumbydate, echo = TRUE}
 ## Summarize the number of steps by day
