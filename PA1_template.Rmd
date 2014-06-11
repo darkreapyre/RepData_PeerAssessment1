@@ -9,7 +9,7 @@ By analyzing this data, the report answers the questions as to the average numbe
 Additionally the report shows the steps taken and R Code used to provide the analysis results.
 
 ## Loading and preprocessing the data
-1) Download and extract the [activity.zip](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip) file into the R working direcory.
+1) Download and extract the [activity.zip](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip) file into the R working directory.
 
 2) Read the data into R as a data frame.
 
@@ -47,7 +47,7 @@ df$date <- as.Date(df$date, format = "%Y-%m-%d")
 
 
 ## What is mean total number of steps taken per day?
-To analyse the number of steps taken per day, the data is broken down by day and totaled.
+To analyse the number of steps taken per day, the data is broken down by day and totaled. The mean and median can then be calculated.
 
 ```{r sumbydate, echo = TRUE}
 ## Summarize the number of steps by day
@@ -69,15 +69,16 @@ hist(sumByDate, xlab = "No. steps taken per day", col = "red",
      main = "Histogram depicting the number of steps taken per day")
 
 ```
-The Mean is: `r meanByDate` (Ignoring NA Values)
-The Median is: `r medianByDate` (Ignoring NA Values)
+
+The Mean is: **`r format(meanByDate, scientific = F)`**  
+The Median is: **`r format(medianByDate, scientific = F)`**
 
 ## What is the average daily activity pattern?
 To analyse the average daily activity pattern, the number of steps per daily interval are averaged. Below is a Time-Series plot depicting this pattern.
 
 ```{r activityply, echo = TRUE}
 ## Summarize the number of steps per interval and the mean
-sumByInterval <- tapply(df$steps, df$interval, sum, na.rm = TRUE)
+sumByInterval <- tapply(df$steps, df$interval, sum)
 meanByInterval <- tapply(df$steps, df$interval, mean, na.rm = TRUE)
 
 ## Plot the pattern of daily activity
@@ -89,9 +90,29 @@ interval <- df[which.max(meanByInterval), 3]
 
 ```
 
-On average across all the days, the 5-minute interval that contains the maximum amount of steps, is the `r interval`th interval.
+On average across all the days, the 5-minute interval that contains the maximum amount of steps, is the **`r interval`th** interval.
 
 ## Imputing missing values
+From the initial summary taken it is evident that there are **2304** missing values (See item **3.** of the **Loading and processing the data** section). This can be verified from the following code chunk:
+
+```{r missing, echo = TRUE}
+## Confirm the total number of missing values (NA) in the data set
+totalMissing <- sum(is.na(df))
+
+```
+Total number of missing values: **`r totalMissing`**
+
+These missing values introduce bias into the above 
+
+
+
+
+
+
+
+since we know that the average number of steps (with missing values removed), is **`r format(meanByInterval, scientific = F)`**, we can create a new data frame and substitutre any missing values with the mean value. 
+
+
 
 
 
