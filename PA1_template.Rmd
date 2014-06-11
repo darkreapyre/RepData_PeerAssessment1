@@ -47,7 +47,7 @@ df$date <- as.Date(df$date, format = "%Y-%m-%d")
 
 
 ## What is mean total number of steps taken per day?
-To analyse the number of steps taken per day, the data is broken down by day and totalled.
+To analyse the number of steps taken per day, the data is broken down by day and totaled.
 
 ```{r sumbydate, echo = TRUE}
 ## Summarize the number of steps by day
@@ -61,19 +61,35 @@ medianByDate <- median(sumByDate, na.rm = TRUE)
 
 ```
 
-Below is the histogram detailing the mean total number of steps taken per day.
+Below is the histogram depicting the mean total number of steps taken per day.
 
 ```{r histogram1, echo = TRUE}
 ## Plot the histogram showing the number steps taken per day.
 hist(sumByDate, xlab = "No. steps taken per day", col = "red",
-     main = "Histogram showing the number of steps taken per day")
+     main = "Histogram depicting the number of steps taken per day")
+
+```
+The Mean is: `r meanByDate` (Ignoring NA Values)
+The Median is: `r medianByDate` (Ignoring NA Values)
+
+## What is the average daily activity pattern?
+To analyse the average daily activity pattern, the number of steps per daily interval are averaged. Below is a Time-Series plot depicting this pattern.
+
+```{r activityply, echo = TRUE}
+## Summarize the number of steps per interval and the mean
+sumByInterval <- tapply(df$steps, df$interval, sum, na.rm = TRUE)
+meanByInterval <- tapply(df$steps, df$interval, mean, na.rm = TRUE)
+
+## Plot the pattern of daily activity
+plot(unique(df$interval), meanByInterval, type = "l", col = "red", 
+     xlab = "5-minute intervals", ylab = "Average no. steps taken for all days")
+
+## Find the interval containing the maximum number of steps on average
+interval <- df[which.max(meanByInterval), 3]
 
 ```
 
-
-## What is the average daily activity pattern?
-
-
+On average across all the days, the 5-minute interval that contains the maximum amount of steps, is the `r interval`th interval.
 
 ## Imputing missing values
 
