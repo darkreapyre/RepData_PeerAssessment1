@@ -39,7 +39,7 @@ for (i in 1:nrow(df2)) {
         }
 }
 
-### Option 5 --> USe subsetting for xypplot
+### Option 5 --> Use subsetting for xypplot
 ## For loop for integrating the "sumByInterval" into new data frame
 test <- df
 
