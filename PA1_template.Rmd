@@ -114,7 +114,7 @@ for (i in 1:nrow(df)){
 
 ```
 
-Using the new data frame, the analysis can be repeated (See the section on **total number of steps taken per day**) to see if the overall **mean** and **median** values differ.
+Using the new data frame, the analysis can be repeated (see the section on **total number of steps taken per day**) to see if the overall **mean** and **median** values differ.
 
 ```{r newsumbydate, echo = TRUE}
 ## Summarize the number of steps by day in the new data frame
@@ -146,7 +146,7 @@ To determine whether there are differences in the pattern of activity between we
 
 From the new data, the time series plot below shows the average number of steps taken on the weekend, compared with the average number of steps taken on a weekday.
 
-**Note:***The plot below is made using the lattice system lattice system. In order to reproduce the plot, ensure that the __lattice package__ is installed.
+**Note:**The plot below is made using the lattice system lattice system. In order to reproduce the plot, ensure that the __lattice package__ is installed.
 
 ```{r latticeplot, echo=TRUE}
 ## Add weekday colum to catagorize 
@@ -180,3 +180,5 @@ xyplot(mean ~ interval | day, data = dfplot, layout = c(1, 2),
        type = "l", xlab = "Interval", ylab = "Number of steps")
 
 ```
+
+As can be seen from the above plot, there is a higher number steps taken on average, over the weekends as opposed to during the week.
