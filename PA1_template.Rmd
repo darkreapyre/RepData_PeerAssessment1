@@ -78,7 +78,6 @@ To analyse the average daily activity pattern, the number of steps per daily int
 
 ```{r sumbyinterval, echo = TRUE}
 ## Summarize the number of steps per interval and the mean
-sumByInterval <- tapply(df$steps, df$interval, sum)
 meanByInterval <- tapply(df$steps, df$interval, mean, na.rm = TRUE)
 
 ## Plot the pattern of daily activity
@@ -102,9 +101,12 @@ totalMissing <- sum(is.na(df))
 ```
 Total number of missing values: **`r totalMissing`**
 
-These missing values potentially introduce bias into the analysis performed in the previous sections. Since the missing values are in the Steps column of the data frame and a new data frame is created, substituting any missing values with the mean value of that specific interval as follows: 
+These missing values potentially introduce bias into the analysis performed in the previous sections. By looking at the summary, the missing values are in the Steps column of the data frame. TO investigate wether the data is skewed by these missing values, a new data frame is created, substituting any missing values with the already calculated mean for the particula interval.
 
 ```{r df2, echo = TRUE}
+## For loop for integrating the "sumByInterval" into new data frame
+
+###########################################################################
 ## Create a temporary data frame of all the complete cases
 tmpdf <- df[complete.cases(df), ]
 
@@ -115,16 +117,17 @@ colnames(tmpMean) <- "mean"
 tmpMean$interval <- rownames(tmpMean)
 
 ## Merge the temporary data frames into a new working data frame
-df2 <- merge(tmpMean, df, by = "interval")
-sort <- order(df2$date, as.numeric(df2$interval))
-df2 <- df2[sort, ]
+df3 <- merge(tmpMean, df, by = "interval")
+sort <- order(df3$date, as.numeric(df3$interval))
+df3 <- df3[sort, ]
 
-## Interate through the rows with a for loop, replacing the NA value with the mean vlaue
-for (i in 1:nrow(df2)) {
-        if (is.na(df2$steps[i])) {
-                df2$steps[i] <- df2$mean[i]
+##vInterate through the rows with a for loop, replacing the NA value with the
+## mean vlaue
+for (i in 1:nrow(df3)) {
+        if (is.na(df3$steps[i])) {
+                df3$steps[i] <- df3$mean[i]
         } else {
-                df2$steps[i] <- df2$steps[i]
+                df3$steps[i] <- df3$steps[i]
         }
 }
 
@@ -134,7 +137,7 @@ Using the new data frame, the analysis can be repeated (See the section on **tot
 
 ```{r newsumbydate, echo = TRUE}
 ## Summarize the number of steps by day in the new data frame
-newsumByDate <- tapply(df2$steps, df2$date, sum)
+newsumByDate <- tapply(df3$steps, df3$date, sum)
 
 ## Get the Mean of the number of steps per day in the new data frame
 newmeanByDate <- mean(newsumByDate)
@@ -164,5 +167,43 @@ From the new data, the time series plot below shows the aversage number of steps
 
 **Note:***The plot below is made using the lattice system lattice system. In order to reploduce the plot, ensure that the **lattice package** is installed.
 
+```{r test, echo=TRUE}
+df2 <- df
+
+for (i in 1:nrow(df)){
+        if(is.na(df$steps[i])){
+                df2$steps[i]<- meanByInterval[[as.character(df[i, "interval"])]]
+        }
+}
+
+## Add weekday colum to catagorize 
+df2$weekday <- c("weekday")
+df2[weekdays(as.Date(df2[, 2])) %in% c("Saturday", "Sunday"), ][4] <- 
+        c("weekend")
+
+## Add the factor levels
+df2$weekday <- factor(df2$weekday)
+
+## subset the data by weekday and weekend
+subWeekend <- subset(df2, df2$weekday == "weekend")
+subWeekday <- subset(df2, df2$weekday == "weekday")
+
+## Get the the average no. of steps per interval for each subset
+meanByWeekday <- tapply(subWeekday$steps, subWeekday$interval, mean)
+meanByWeekend <- tapply(subWeekend$steps, subWeekend$interval, mean)
+
+## Create a unique data frame for plotting
+library(lattice)
+x <- data.frame(interval = unique(subWeekday$interval),
+                mean = as.numeric(meanByWeekday),
+                day = rep("weekday", length(meanByWeekday)))
+y <- data.frame(interval = unique(subWeekend$interval),
+                mean = as.numeric(meanByWeekend),
+                day = rep("weekend", length(meanByWeekend)))
+dfplot <- rbind(x, y)
+
+xyplot(mean ~ interval | day, data = dfplot, layout = c(1, 2), 
+       type = "l", xlab = "Interval", ylab = "Number of steps")
 
 
+```
