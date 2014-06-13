@@ -66,7 +66,7 @@ Below is the histogram depicting the mean total number of steps taken per day.
 ```{r histogram1, echo = TRUE}
 ## Plot the histogram showing the number steps taken per day.
 hist(sumByDate, xlab = "No. steps taken per day", col = "red",
-     main = "Histogram depicting the number of steps taken per day")
+     main = "Histogram depicting the average no. steps taken per day")
 
 ```
 
@@ -101,7 +101,7 @@ totalMissing <- sum(is.na(df))
 ```
 Total number of missing values: **`r totalMissing`**
 
-These missing values potentially introduce bias into the analysis performed in the previous sections. By looking at the summary, the missing values are in the Steps column of the data frame. TO investigate wether the data is skewed by these missing values, a new data frame is created, substituting any missing values with the already calculated mean for the particula interval.
+These missing values potentially introduce bias into the analysis performed in the previous sections. By looking at the summary, the missing values are in the Steps column of the data frame. To investigate whether the data is skewed by these missing values, a new data frame is created, substituting any missing values with the already calculated mean for the particular interval.
 
 ```{r df2, echo = TRUE}
 ## For loop for integrating the "meanByInterval" into new data frame
@@ -114,7 +114,7 @@ for (i in 1:nrow(df)){
 
 ```
 
-Using the new data frame, the analysis can be repeated (See the section on **total number of steps taken per day***) to see if the overall **mean** and **median** values differ.
+Using the new data frame, the analysis can be repeated (See the section on **total number of steps taken per day**) to see if the overall **mean** and **median** values differ.
 
 ```{r newsumbydate, echo = TRUE}
 ## Summarize the number of steps by day in the new data frame
@@ -132,7 +132,7 @@ Below is the histogram depicting the mean total number of steps taken per day (w
 ```{r histogram2, echo = TRUE}
 ## Plot the histogram showing the number steps taken per day from the new data frame.
 hist(newsumByDate, xlab = "No. steps taken per day", col = "red",
-     main = "Histogram depicting the number of steps taken per day (missing values replaced)")
+     main = "Histogram depicting the average no. steps taken per day")
 
 ```
 
@@ -142,11 +142,11 @@ The new Median is: **`r format(newmedianByDate, scientific = F)`**
 As can be seen, there is no difference to the **mean** or **median** by replacing the the missing values with the mean of the specific interval.
 
 ## Are there differences in activity patterns between weekdays and weekends?
-To determine whether there are differences in the pattern of activity between weekend and weekdays, the data in the new data frame is catorized into a **weekday** or **weekend** day, based on the date.
+To determine whether there are differences in the pattern of activity between weekend and weekdays, the data in the new data frame is categorized into a **weekday** or **weekend** day, based on the date.
 
-From the new data, the time series plot below shows the aversage number of steps taken on the weekend, compared with the average number of steps taken on a weekday.
+From the new data, the time series plot below shows the average number of steps taken on the weekend, compared with the average number of steps taken on a weekday.
 
-**Note:***The plot below is made using the lattice system lattice system. In order to reploduce the plot, ensure that the **lattice package** is installed.
+**Note:***The plot below is made using the lattice system lattice system. In order to reproduce the plot, ensure that the __lattice package__ is installed.
 
 ```{r latticeplot, echo=TRUE}
 ## Add weekday colum to catagorize 
@@ -175,8 +175,8 @@ y <- data.frame(interval = unique(subWeekend$interval),
                 day = rep("weekend", length(meanByWeekend)))
 dfplot <- rbind(x, y)
 
+## Plot the data
 xyplot(mean ~ interval | day, data = dfplot, layout = c(1, 2), 
        type = "l", xlab = "Interval", ylab = "Number of steps")
-
 
 ```
