@@ -104,30 +104,11 @@ Total number of missing values: **`r totalMissing`**
 These missing values potentially introduce bias into the analysis performed in the previous sections. By looking at the summary, the missing values are in the Steps column of the data frame. TO investigate wether the data is skewed by these missing values, a new data frame is created, substituting any missing values with the already calculated mean for the particula interval.
 
 ```{r df2, echo = TRUE}
-## For loop for integrating the "sumByInterval" into new data frame
-
-###########################################################################
-## Create a temporary data frame of all the complete cases
-tmpdf <- df[complete.cases(df), ]
-
-## create a another data frame of the average steps per interval
-tmpMean <- as.data.frame(tapply(tmpdf$steps, INDEX = tmpdf$interval, mean, na.rm = TRUE))
-## Tidy up the new data frame
-colnames(tmpMean) <- "mean"
-tmpMean$interval <- rownames(tmpMean)
-
-## Merge the temporary data frames into a new working data frame
-df3 <- merge(tmpMean, df, by = "interval")
-sort <- order(df3$date, as.numeric(df3$interval))
-df3 <- df3[sort, ]
-
-##vInterate through the rows with a for loop, replacing the NA value with the
-## mean vlaue
-for (i in 1:nrow(df3)) {
-        if (is.na(df3$steps[i])) {
-                df3$steps[i] <- df3$mean[i]
-        } else {
-                df3$steps[i] <- df3$steps[i]
+## For loop for integrating the "meanByInterval" into new data frame
+df2 <- df
+for (i in 1:nrow(df)){
+        if(is.na(df$steps[i])){
+                df2$steps[i]<- meanByInterval[[as.character(df[i, "interval"])]]
         }
 }
 
@@ -137,7 +118,7 @@ Using the new data frame, the analysis can be repeated (See the section on **tot
 
 ```{r newsumbydate, echo = TRUE}
 ## Summarize the number of steps by day in the new data frame
-newsumByDate <- tapply(df3$steps, df3$date, sum)
+newsumByDate <- tapply(df2$steps, df2$date, sum)
 
 ## Get the Mean of the number of steps per day in the new data frame
 newmeanByDate <- mean(newsumByDate)
@@ -167,15 +148,7 @@ From the new data, the time series plot below shows the aversage number of steps
 
 **Note:***The plot below is made using the lattice system lattice system. In order to reploduce the plot, ensure that the **lattice package** is installed.
 
-```{r test, echo=TRUE}
-df2 <- df
-
-for (i in 1:nrow(df)){
-        if(is.na(df$steps[i])){
-                df2$steps[i]<- meanByInterval[[as.character(df[i, "interval"])]]
-        }
-}
-
+```{r latticeplot, echo=TRUE}
 ## Add weekday colum to catagorize 
 df2$weekday <- c("weekday")
 df2[weekdays(as.Date(df2[, 2])) %in% c("Saturday", "Sunday"), ][4] <- 
